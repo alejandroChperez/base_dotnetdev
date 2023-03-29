@@ -1,0 +1,33 @@
+version: '3.5'
+services:
+
+    dotnetdev:
+        container_name: dotnetdev
+        restart: always
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - LD_LIBRARY_PATH=/app/clidriver/lib/
+            # - LIBPATH=/app/clidriver/lib/
+        image: mcr.microsoft.com/dotnet/sdk:6.0
+        command: dotnet watch --project ./ApiTamizaje run --urls "http://0.0.0.0:80" 
+        ports:
+            - "192.168.6.110:9550:80"
+        expose:
+            - 80
+        volumes:
+            - ./ApiTamizaje:/ApiTamizaje
+            - /usr/share/zoneinfo/America/Mexico_City:/etc/localtime
+        networks:
+            nginx-proxy:
+                ipv4_address: 10.200.0.11
+
+# ########## CONFIGURACION EXTRA ############################### #
+# ESTA SECCIÓN ES OPCIONAL SI REQUIEREN QUE TENGA UNA IP EL CONTENEDOR DESCOMENTAR
+networks:
+    nginx-proxy:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.200.0.0/24
+# ##################################################### #
